@@ -9,20 +9,63 @@
 #ifndef Lisa_h
 #define Lisa_h
 #include <unordered_map>
+#include <string>
+#include <iostream>
 
 namespace lisa
 {
-    static int reg;
-    std::unordered_multimap<std::string, int> map;
-    void erase();
-    void done();
-    void input();
-    void output(string key);
-    void plus(std::string x, std::string y);
-    void minus(std::string x, std::string y);
-    void store(std::string key);
-    void init(std::string key, int x);
-    void put(std::string x, std::string y);
+    typedef std::unordered_multimap<std::string, int> umm;
+    static int reg = 0;
+    umm map;
+    
+    void erase()
+    {
+        reg = 0;
+    }
+    void done()
+    {
+        erase();
+        exit(0);
+    }
+    void input()
+    {
+        std::cin >> reg;
+    }
+    void output(std::string key)
+    {
+        auto range = map.equal_range(key);
+        for(auto it = range.first; it != range.second; it++)
+            std::cout << it->second << std::endl;
+    }
+    void plus(std::string x, std::string y)
+    {
+        auto xrange = map.equal_range(x);
+        auto yrange = map.equal_range(y);
+        if(xrange.first == xrange.second && yrange.first == yrange.second && map.find(x) != map.end() && map.find(y) != map.end())
+            reg = map.find(x)->second + map.find(y)->second;
+    }
+    void minus(std::string x, std::string y)
+    {
+        auto xrange = map.equal_range(x);
+        auto yrange = map.equal_range(y);
+        if(xrange.first == xrange.second && yrange.first == yrange.second && map.find(x) != map.end() && map.find(y) != map.end())
+            reg = map.find(x)->second - map.find(y)->second;
+    }
+    void store(std::string key)
+    {
+        map.erase(key);
+        map.insert(umm::value_type(key, reg));
+    }
+    void init(std::string key, int x)
+    {
+        map.erase(key);
+        map.insert(umm::value_type(key, x));
+    }
+    void put(std::string x, std::string y)
+    {
+        map.erase(x);
+        map.insert(umm::value_type(x, map.find(y)->second));
+    }
 }
 
 #endif /* Lisa_h */
