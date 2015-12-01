@@ -1,8 +1,22 @@
 # LISA
 
-The L Instruction Set Architecture
-----------------------------------
+The Little Instruction Set Architecture
+---------------------------------------
 Built to simulate development in assembly language.
+
+| Instruction | Use |
+| ----------- |:---:|
+| done        | halt program |
+| init var x  | declare and initialize variable with value x |
+| put var1 var2 | set the value of var1 to the value of var2 |
+| input       | take console input and store in register |
+| output var  | print value of var to console | 
+| store var   | set the value of var to the value of the register |
+| plus var1 var2 | collect the sum of var1 and var2 in the register |
+| minus var1 var2 | subtract var2 from var1 and store value in register |
+| erase       | clear the register |
+| if          | evaluates condition |
+| loop        | performs block until break |
 
 License
 -------
