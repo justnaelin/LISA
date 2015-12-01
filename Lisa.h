@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <string>
 #include <iostream>
+#include <cstdlib>
 
 namespace lisa
 {
@@ -66,6 +67,25 @@ namespace lisa
         map.erase(x);
         map.insert(umm::value_type(x, map.find(y)->second));
     }
+    bool if_statement(string statement) 
+    {
+    		if(statement == "NEG")
+    			return reg < 0;
+    		else if(statement == "POS")
+    			return reg > 0;
+    		else if(statement == "ZERO")
+    			return reg == 0;
+    		else
+    			exit(0);
+    }
+    void loop(bool condition) 
+    {
+    		//do something
+    		if(!condition)
+    			loop(condition);
+    } 
 }
+
+// TODO: PARSE!!!
 
 #endif /* Lisa_h */
