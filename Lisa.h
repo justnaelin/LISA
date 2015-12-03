@@ -58,10 +58,16 @@ namespace lisa
         map.erase(key);
         map.insert(umm::value_type(key, reg));
     }
-    void init(std::string key, int x)
+    void init_arr(std::string key, int n, int arr[])
     {
         map.erase(key);
-        map.insert(umm::value_type(key, x));
+	for(int i = 0; i < n; i++)
+            map.insert(umm::value_type(key, arr[i]));
+    }
+    void init(std::string key, int value)
+    {
+	map.erase(key);
+	map.insert(umm::value_type(key, value));
     }
     void put(std::string key, std::string y)
     {
