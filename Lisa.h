@@ -40,16 +40,12 @@ namespace lisa
     }
     void plus(std::string x, std::string y)
     {
-        auto xrange = map.equal_range(x);
-        auto yrange = map.equal_range(y);
-        if(xrange.first == xrange.second && yrange.first == yrange.second && map.find(x) != map.end() && map.find(y) != map.end())
-            reg = map.find(x)->second + map.find(y)->second;
+        if(map.find(x) != map.end() && map.find(y) != map.end())
+                reg = map.find(x)->second + map.find(y)->second;
     }
     void minus(std::string x, std::string y)
     {
-        auto xrange = map.equal_range(x);
-        auto yrange = map.equal_range(y);
-        if(xrange.first == xrange.second && yrange.first == yrange.second && map.find(x) != map.end() && map.find(y) != map.end())
+        if(map.find(x) != map.end() && map.find(y) != map.end())
             reg = map.find(x)->second - map.find(y)->second;
     }
     void store(std::string key)
@@ -67,7 +63,7 @@ namespace lisa
         map.erase(x);
         map.insert(umm::value_type(x, map.find(y)->second));
     }
-    bool if_statement(string statement) 
+    bool if_statement(std::string statement) 
     {
     		if(statement == "NEG")
     			return reg < 0;
