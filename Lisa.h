@@ -63,10 +63,10 @@ namespace lisa
         map.erase(key);
         map.insert(umm::value_type(key, x));
     }
-    void put(std::string x, std::string y)
+    void put(std::string key, std::string y)
     {
-        map.erase(x);
-        map.insert(umm::value_type(x, map.find(y)->second));
+        map.erase(key);
+        map.insert(umm::value_type(key, map.find(y)->second));
     }
     bool if_statement(std::string statement) 
     {
