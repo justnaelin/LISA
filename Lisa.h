@@ -34,9 +34,14 @@ namespace lisa
     }
     void output(std::string key)
     {
-        auto range = map.equal_range(key);
-        for(auto it = range.first; it != range.second; it++)
-            std::cout << it->second << std::endl;
+        if(key == "reg")
+	    std::cout << reg << std::endl;
+        else 
+	{
+	    auto range = map.equal_range(key);
+            for(auto it = range.first; it != range.second; it++)
+                std::cout << it->second << std::endl;
+	}
     }
     void plus(std::string x, std::string y)
     {
@@ -65,23 +70,29 @@ namespace lisa
     }
     bool if_statement(std::string statement) 
     {
-    		if(statement == "NEG")
-    			return reg < 0;
-    		else if(statement == "POS")
-    			return reg > 0;
-    		else if(statement == "ZERO")
-    			return reg == 0;
-    		else
-    			exit(0);
+    	if(statement == "NEG")
+  	    return reg < 0;
+    	else if(statement == "POS")
+    	    return reg > 0;
+    	else if(statement == "ZERO")
+    	    return reg == 0;
+    	else
+    	    exit(0);
     }
     void loop(bool condition) 
     {
-    		//do something
-    		if(!condition)
-    			loop(condition);
+    	if(!condition) 
+	{
+	    // do something
+    	    loop(condition);
+	}
     } 
 }
 
-// TODO: PARSE!!!
+// TODO: parse
+// TODO: exception handling
+// TODO: testing
+// TODO: benchmarks
+// TODO: documentation
 
 #endif /* Lisa_h */
