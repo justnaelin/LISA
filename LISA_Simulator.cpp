@@ -27,6 +27,12 @@ int main()
     cout << "var2: ";
     lisa::output("var2");           // note: should output 8
 
+    // TEST INITA
+    int arr[] = {1, 2, 3};
+    lisa::inita("arr1", 3, arr); 
+    cout << "arr1: ";
+    lisa::output("arr1");	    // note: should output 1 2 3
+
     // TEST PLUS/MINUS/STORE
     lisa::plus("var1", "var2"); 
     lisa::store("var1");            // note: var1 and reg should be holding the same value, 15
@@ -54,7 +60,11 @@ int main()
 	cout << "positive" << endl;
     if(lisa::if_statement("ZERO"))
 	cout << "zero" << endl;
-    
+   
+    // TEST AT
+    lisa::at("arr1", 1);
+    cout << "reg value is: ";
+    lisa::output("reg"); 
     
     lisa::done(); 
     

@@ -44,7 +44,8 @@ namespace lisa
             auto range = map.equal_range(key);
             
             for(auto it = range.first; it != range.second; it++)
-                std::cout << it->second << std::endl;
+                std::cout << it->second << " ";
+	    std::cout << std::endl;
         }
     }
     void plus(std::string x, std::string y)
@@ -61,12 +62,6 @@ namespace lisa
     {
         map.erase(key);
         map.insert(umm::value_type(key, reg));
-    }
-    void init_arr(std::string key, int n, int arr[])
-    {
-        map.erase(key);
-	for(int i = 0; i < n; i++)
-            map.insert(umm::value_type(key, arr[i]));
     }
     void init(std::string key, int value)
     {
