@@ -97,8 +97,5 @@ namespace lisa
 
 // TODO: parse
 // TODO: exception handling
-// TODO: testing
-// TODO: benchmarks
-// TODO: documentation
 
 #endif /* Lisa_h */
