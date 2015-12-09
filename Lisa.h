@@ -100,13 +100,16 @@ namespace lisa
     	else
     	    exit(0);
     }
-    void loop(bool condition) 
+    void loop(std::string instructions) 
     {
-    	if(!condition)
-        {
-	    // do something
-    	    loop(condition);
-        }
+    	while(true)
+	{
+	    // parse through instructions
+	    // do it
+	    // should be a condition in here somewhere
+	    // if condition, run through instructions again
+	    // if !condition, break out of infinite loop
+	}
     }
     void func(std::string name, std::string code)
     {
