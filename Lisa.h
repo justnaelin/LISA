@@ -12,12 +12,15 @@
 #include <string>
 #include <iostream>
 #include <cstdlib>
+#include <fstream>
 
 namespace lisa
 {
     typedef std::unordered_multimap<std::string, int> umm;
+    typedef std::unordered_map<std::string, std::string> umm2;
     static int reg = 0;
     umm map;
+    umm2 functions;
     
     void erase()
     {
@@ -37,11 +40,13 @@ namespace lisa
         if(key == "reg")
 	    std::cout << reg << std::endl;
         else 
-	{
-	    auto range = map.equal_range(key);
+        {
+            auto range = map.equal_range(key);
+            
             for(auto it = range.first; it != range.second; it++)
-                std::cout << it->second << std::endl;
-	}
+                std::cout << it->second << " ";
+	    std::cout << std::endl;
+        }
     }
     void plus(std::string x, std::string y)
     {
@@ -58,20 +63,36 @@ namespace lisa
         map.erase(key);
         map.insert(umm::value_type(key, reg));
     }
-    void init(std::string key, int x)
+    void init(std::string key, int value)
+    {
+	map.erase(key);
+	map.insert(umm::value_type(key, value));
+    }
+    void inita(std::string key, int size, int arr[])
     {
         map.erase(key);
-        map.insert(umm::value_type(key, x));
+        for(int i = 0; i < size; i++)
+            map.insert(umm::value_type(key, arr[i]));
     }
     void put(std::string key, std::string y)
     {
         map.erase(key);
         map.insert(umm::value_type(key, map.find(y)->second));
     }
+    void at(std::string key, int index)
+    {
+        auto range = map.equal_range(key);
+        auto it = range.first;
+        
+        for(int i = 0; i < index; i++)
+            it++;
+        
+        reg = it->second;
+    }
     bool if_statement(std::string statement) 
     {
     	if(statement == "NEG")
-  	    return reg < 0;
+            return reg < 0;
     	else if(statement == "POS")
     	    return reg > 0;
     	else if(statement == "ZERO")
@@ -81,18 +102,23 @@ namespace lisa
     }
     void loop(bool condition) 
     {
-    	if(!condition) 
-	{
+    	if(!condition)
+        {
 	    // do something
     	    loop(condition);
-	}
-    } 
+        }
+    }
+    void func(std::string name, std::string code)
+    {
+        functions.insert(umm2::value_type(name, code));
+    }
+    void go(std::string name)
+    {
+        functions.find(name);
+    }
 }
 
 // TODO: parse
 // TODO: exception handling
-// TODO: testing
-// TODO: benchmarks
-// TODO: documentation
 
 #endif /* Lisa_h */
