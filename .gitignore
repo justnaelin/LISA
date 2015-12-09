@@ -1,0 +1,5 @@
+*.gch
+*.swp
+a.out
+example
+.DS_Store
