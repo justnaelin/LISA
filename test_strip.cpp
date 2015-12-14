@@ -9,15 +9,14 @@ string tobinary(string input, bool ch);
 
 int main()
 {
-/*
-	string str = " W.,o?rd...s!?  "; //  W.,o?rd...s!?
+	string str = " W	.,o?	rd	...s!?  "; //  W.,o?rd...s!?
 	string res;
 	for( int i = 0; i < str.length(); i++ )
 		if( isalpha(str[i]) )
 			res = res + str[i];
 	
 	cout << res << endl;
-*/
+
 //	int ch = 'c';
 //	cout << static_cast<char>(ch) << endl;
 /*
@@ -27,7 +26,7 @@ int main()
 	else
 		print(a[0]);
 */
-	string var[2];
+/*	string var[2];
 	string input = "c";
 	try
 	{
@@ -37,7 +36,7 @@ int main()
 	{
 		cerr << msg;
 		return EXIT_FAILURE;
-	}
+	}*/
 	return EXIT_SUCCESS;
 }
 

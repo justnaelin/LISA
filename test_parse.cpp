@@ -45,7 +45,7 @@ void parse(ifstream& fin)
 	while( getline(fin, line) )
         {
 		comment(line);
-cout << line << endl;
+
 		if( empty(line) )
 		{
 			line_no++;
@@ -59,10 +59,16 @@ cout << line << endl;
                 while( begin = line.find_first_not_of(" \t\n\r") != string::npos )      // find non-whitespace
                 {
                         size_t end;
-                        end = line.find_first_of(" \t\n\r");                            // find whitespace
+                        end = line.find_first_of(" \t\n\r", begin);                     // find whitespace
 
-                        if( end == line.length() )                                  // end of line
+			if( line.empty() )
+				break;
+
+                        if( end == string::npos )                                       // end of line
+			{
                                 word = line;
+				line = "";
+			}
 
                         else                                                            // parse word
                         {
