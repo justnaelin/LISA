@@ -1,0 +1,54 @@
+/ benchmarks.txt
+/ Naelin Aquino, Clarissa Vazquez, Samuel Villavicencio 
+
+/ clear all registers
+ERASE
+
+/ ask how many values the user wants to add & get that value
+INIT cntr 0	/ initialize cntr to 0
+INPUT		/ store console input into register
+STORE cntr	/ store register into cntr
+
+/ use a loop to get the needed values and compute the sum
+INIT sum 0 	/ initialize sum to 0
+INIT one 1	/ initialize one to 1
+LOOP		/ begin loop
+PUT REG cntr	/ put cntr into REG
+IF NEG		/ if value in REG is below 0
+BREAK		/ exit the loop
+FI		/ end if block
+INPUT		/ get user input
+PLUS sum REG 	/ add sum and REG and store in REG
+STORE sum	/ store REG into sum
+MINUS cntr one	/ subtract 1 from cntr
+POOL		/ end of loop, go back to loop start
+		
+/ show the sum
+OUTPUT sum
+
+/ set up an array of 5 integers
+INITA arr 5 1 2 3 4 5 / initialize arr with size 5 to 1 2 3 4 5
+
+/ clear all registers
+ERASE
+
+/ ask the user for a number to find in the array, output the index location
+INIT target 0	/ initialize targdfket to 0
+INIT index 0 	/ initialize index to 0
+INIT incr 1 	/ initialize incr to 1
+INPUT		/ user inputs target number to find, stored in REG
+STORE target	/ store REG value into target
+LOOP		/ begin loop
+AT arr index 	/ Return value of arr at index, store in REG
+MINUS target REG / Subtract REG from target
+IF ZERO		/ if target is found..
+PUT REG index	/ put index into REG
+OUTPUT REG	/ output the index where the target is located
+BREAK		/ get out of loop
+FI		/ end if block
+PLUS index incr	 / add 1 to index, store in REG
+STORE index	/ store value in REG into index
+POOL		/ end loop block
+
+
+/ show a message as to whether or not the number was found
