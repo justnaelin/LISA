@@ -103,21 +103,24 @@ namespace lisa
     void loop(std::string instructions) 
     {
     	while(true)
-	{
-	    // parse through instructions
-	    // do it
-	    // should be a condition in here somewhere
-	    // if condition, run through instructions again
-	    // if !condition, break out of infinite loop
-	}
+        {
+            // parse through instructions
+            // do it
+            // should be a condition in here somewhere
+            // if condition, run through instructions again
+            // if !condition, break out of infinite loop
+        }
     }
     void func(std::string name, std::string code)
     {
+        functions.erase(name);
         functions.insert(umm2::value_type(name, code));
     }
-    void go(std::string name)
+    std::string go(std::string name)
     {
-        functions.find(name);
+        auto it = functions.find(name);
+        return it->second;
+        
     }
 }
 
