@@ -19,7 +19,7 @@ namespace lisa
     typedef std::unordered_multimap<std::string, int> umm;
     typedef std::unordered_map<std::string, std::string> umm2;
     static int reg = 0;
-    umm map;
+    umm variables;
     umm2 functions;
     
     void erase()
@@ -41,7 +41,7 @@ namespace lisa
 	    std::cout << reg << std::endl;
         else 
         {
-            auto range = map.equal_range(key);
+            auto range = variables.equal_range(key);
             
             for(auto it = range.first; it != range.second; it++)
                 std::cout << it->second << " ";
@@ -50,38 +50,38 @@ namespace lisa
     }
     void plus(std::string x, std::string y)
     {
-        if(map.find(x) != map.end() && map.find(y) != map.end())
-                reg = map.find(x)->second + map.find(y)->second;
+        if(variables.find(x) != variables.end() && variables.find(y) != variables.end())
+                reg = variables.find(x)->second + variables.find(y)->second;
     }
     void minus(std::string x, std::string y)
     {
-        if(map.find(x) != map.end() && map.find(y) != map.end())
-            reg = map.find(x)->second - map.find(y)->second;
+        if(variables.find(x) != variables.end() && variables.find(y) != variables.end())
+            reg = variables.find(x)->second - variables.find(y)->second;
     }
     void store(std::string key)
     {
-        map.erase(key);
-        map.insert(umm::value_type(key, reg));
+        variables.erase(key);
+        variables.insert(umm::value_type(key, reg));
     }
     void init(std::string key, int value)
     {
-	map.erase(key);
-	map.insert(umm::value_type(key, value));
+	variables.erase(key);
+	variables.insert(umm::value_type(key, value));
     }
     void inita(std::string key, int size, int arr[])
     {
-        map.erase(key);
+        variables.erase(key);
         for(int i = 0; i < size; i++)
-            map.insert(umm::value_type(key, arr[i]));
+            variables.insert(umm::value_type(key, arr[i]));
     }
     void put(std::string key, std::string y)
     {
-        map.erase(key);
-        map.insert(umm::value_type(key, map.find(y)->second));
+        variables.erase(key);
+        variables.insert(umm::value_type(key, variables.find(y)->second));
     }
     void at(std::string key, int index)
     {
-        auto range = map.equal_range(key);
+        auto range = variables.equal_range(key);
         auto it = range.first;
         
         for(int i = 0; i < index; i++)
