@@ -24,11 +24,12 @@ void parsePUT(char& next, ifstream& fin);
 void parseINITA(char& next, ifstream& fin);
 void parseAT(char& next, ifstream& fin);
 void parseGO(char& next, ifstream& fin);
+void parseFUNC(char& next, ifstream& fin);
 
 int main()
 {
 	ifstream fin;
-    //fin.open("/Users/naelinaquino/Documents/assembly/LISA/LISA/en.lproj/test.txt");
+    fin.open("/Users/naelinaquino/Documents/assembly/LISA/LISA/test.txt");
 
 	try
 	{
@@ -158,10 +159,7 @@ void parsee(ifstream& fin)
         op = "";
         
         while(next == ' ')
-        {
-            cout << "HERE\n";
             fin.get(next);
-        }
         
         // Get operation
         while(next != ' ' && next != '\n' && next != '\r' && !fin.eof())
@@ -192,6 +190,12 @@ void parsee(ifstream& fin)
             parseSTORE(next, fin);
         else if(op == "PUT")
             parsePUT(next, fin);
+        else if(op == "INITA")
+            parseINITA(next, fin);
+        else if(op == "FUNC")
+            parseFUNC(next, fin);
+        else if(op == "GO")
+            parseGO(next, fin);
     }
     
 }
@@ -335,7 +339,50 @@ void parsePUT(char& next, ifstream& fin)
 
 void parseINITA(char& next, ifstream& fin)
 {
+    string var;
+    string n;
+    string val;
     
+    while(next == ' ')
+        fin.get(next);
+    
+    while(next != ' ' && next != '\n' && next != '\r' && !fin.eof())
+    {
+        var += next;
+        fin.get(next);
+    }
+    
+    while(next == ' ')
+        fin.get(next);
+    
+    while(next != ' ' && next != '\n' && next != '\r' && !fin.eof())
+    {
+        n += next;
+        fin.get(next);
+    }
+    
+    while(next == ' ')
+        fin.get(next);
+    
+    const int SIZE = stoi(n);
+    int arr[SIZE];
+    
+    for(int i = 0; i < SIZE; i++)
+    {
+        val = "";
+        // TODO: while it is an integer
+        while(next != ' ' && next != '\n' && next != '\r' && !fin.eof())
+        {
+            val += next;
+            fin.get(next);
+        }
+        arr[i] = stoi(val);
+        
+        while(next == ' ')
+            fin.get(next);
+    }
+    
+    lisa::inita(var, SIZE, arr);
 }
 
 void parseAT(char& next, ifstream& fin)
@@ -378,5 +425,52 @@ void parseGO(char& next, ifstream& fin)
         fin.get(next);
     }
     
-    lisa::go(var);
+    string code = lisa::go(var);
+    ofstream func_file("temp.txt");
+    ifstream file;
+    for(auto it = code.begin(); it < code.end(); it++)
+    {
+        func_file << *it;
+    }
+    func_file.close();
+    file.open("temp.txt");
+    
+    parsee(file);
+}
+
+void parseFUNC(char& next, ifstream& fin)
+{
+    string name;
+    string code;
+    string op;
+
+    while(next == ' ')
+        fin.get(next);
+
+    while(next != ' ' && next != '\n' && next != '\r' && !fin.eof())
+    {
+        name += next;
+        fin.get(next);
+    }
+
+    while(next == ' ' || next == '\n' || next == '\r')
+        fin.get(next);
+
+    while(op != "CNUF")
+    {
+      op = "";
+      while(next != ' ' && next != '\n' && next != '\r' && !fin.eof())
+      {
+          op += next;
+          fin.get(next);
+      }
+      if(op != "CNUF")
+      {
+          code += op;
+          code += next;
+          fin.get(next);
+      }
+    }
+    
+    lisa::func(name, code);
 }
