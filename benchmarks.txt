@@ -22,6 +22,20 @@ PLUS sum REG 	/ add sum and REG and store in REG
 STORE sum	/ store REG into sum
 MINUS cntr one	/ subtract 1 from cntr
 POOL		/ end of loop, go back to loop start
+
+/ different way of using a loop - declare a function first then loop
+FUNC add 	/ function add is added to functions hashmap with its name as 
+PUT REG cntr	/ its key and instructions as its value/code
+IF NEG		/ if statement makes or breaks the function 
+BREAK
+FI		
+INPUT
+PLUS sum REG
+STORE sum
+MINUS cntr one
+CNUF
+
+LOOP add 	/ will find add in functions hashmap and parse through the instructions 
 		
 / show the sum
 OUTPUT sum
