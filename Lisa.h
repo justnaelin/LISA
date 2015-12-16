@@ -9,6 +9,7 @@
 #ifndef Lisa_h
 #define Lisa_h
 #include <string>
+#include <vector>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -113,31 +114,31 @@ namespace lisa
     	else
     	    exit(0);
     }
-/*
-    void loop(std::string instructions) 
+
+    void loop(std::string name) 
     {
+        auto range = functions.equal_range(name);
     	while(true)
         {
-            // parse through instructions
-            // do it
-            // should be a condition in here somewhere
-            // if condition, run through instructions again
-            // if !condition, break out of infinite loop
+            for(auto it = range.first; it != range.second; it++)
+                it->second();
         }
     }
 
-    void func(std::string name, std::string code)
+    void func(std::string name, std::vector<std::function<void(void)>> funcs)
     {
         functions.erase(name);
-        functions.insert(umm2::value_type(name, code));
+        for(int i = 0; i < funcs.size(); i++)
+            functions.insert(umm2::value_type(name, funcs[i]));
     }
 
-    std::string go(std::string name)
+    void go(std::string name)
     {
-        auto it = functions.find(name);
-        return it->second;      
+        auto range = functions.equal_range(name);
+        for(auto it = range.first; it != range.second; it++)
+            it->second();
     }
-*/
+
 }
 
 // TODO: parse

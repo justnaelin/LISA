@@ -19,8 +19,9 @@ foo parseSTORE(std::ifstream& fin);
 foo parsePUT(std::ifstream& fin);
 foo parseINITA(std::ifstream& fin);
 foo parseAT(std::ifstream& fin);
-//foo parseGO(std::ifstream& fin);
-//foo parseFUNC(std::ifstream& fin);
+foo parseGO(std::ifstream& fin);
+foo parseFUNC(std::ifstream& fin);
+foo parseLOOP(std::ifstream& fin);
 
 int main()
 {
@@ -84,10 +85,12 @@ void parse(std::ifstream& fin)
             parsePUT(fin)();
         else if(op == "INITA")
             parseINITA(fin)();
-//        else if(op == "FUNC")
-//            parseFUNC(fin)();
-//        else if(op == "GO")
-//            parseGO(fin);
+        else if(op == "FUNC")
+            parseFUNC(fin)();
+        else if(op == "GO")
+            parseGO(fin);
+        else if(op == "LOOP")
+            parseLOOP(fin);
     }
     
 }
@@ -312,10 +315,9 @@ foo parseAT(std::ifstream& fin)
     return std::bind(lisa::at, var, i);
 }
 
-// do things
-/*
 foo parseGO(std::ifstream& fin)
 {
+    char next;
     std::string var;
     
     while(next == ' ')
@@ -327,24 +329,33 @@ foo parseGO(std::ifstream& fin)
         fin.get(next);
     }
     
-    std::string code = lisa::go(var);
-    ofstream func_file("temp.txt");
-    std::ifstream file;
-    for(auto it = code.begin(); it < code.end(); it++)
-    {
-        func_file << *it;
-    }
-    func_file.close();
-    file.open("temp.txt");
+    return std::bind(&lisa::go, var);
+}
+
+foo parseLOOP(std::ifstream& fin)
+{
+    char next;
+    std::string var;
     
-    parsee(file);
+    while(next == ' ')
+        fin.get(next);    
+
+    while(next!= ' ' && next != '\n' && next != '\r' && !fin.eof())
+    {
+        var += next;
+        fin.get(next);
+    }
+    
+    return std::bind(&lisa::loop, var);
 }
 
 foo parseFUNC(std::ifstream& fin)
 {
+    std::vector<std::function<void(void)>> funcs;
     std::string name;
     std::string code;
     std::string op;
+    char next;
 
     while(next == ' ')
         fin.get(next);
@@ -360,20 +371,41 @@ foo parseFUNC(std::ifstream& fin)
 
     while(op != "CNUF")
     {
-      op = "";
-      while(next != ' ' && next != '\n' && next != '\r' && !fin.eof())
-      {
-          op += next;
-          fin.get(next);
-      }
-      if(op != "CNUF")
-      {
-          code += op;
-          code += next;
-          fin.get(next);
-      }
+        fin.get(next);
+        if(isspace(next))
+        {
+            if(!op.empty())
+            {
+                if(op == "INIT")
+                    funcs.push_back(parseINIT(fin));
+                else if(op == "INPUT")
+                    funcs.push_back(&lisa::input);
+                else if(op == "OUTPUT")
+                    funcs.push_back(parseOUTPUT(fin));
+                else if(op == "PLUS")
+                    funcs.push_back(parsePLUS(fin));
+                else if(op == "MINUS")
+                    funcs.push_back(parseMINUS(fin));
+                else if(op == "ERASE")
+                    funcs.push_back(&lisa::erase);
+                else if(op == "DONE")
+                    funcs.push_back(&lisa::done);
+                else if(op == "STORE")
+                    funcs.push_back(parseSTORE(fin));
+                else if(op == "PUT")
+                    funcs.push_back(parsePUT(fin));
+                else if(op == "INITA")
+                    funcs.push_back(parseINITA(fin));
+            }
+            op = "";
+        }
+        else
+        {
+            next = toupper(next);
+            op += next;
+        }     
     }
     
-    lisa::func(name, code);
+    return std::bind(&lisa::func, name, funcs);
 }
-*/
+
