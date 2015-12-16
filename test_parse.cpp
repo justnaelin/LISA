@@ -1,46 +1,33 @@
 #include <string>
+#include <vector>
 #include <fstream>
 #include <iostream>
+#include <utility>
+#include <functional>
 #include <cstdlib>
 #include "Lisa.h"
-using namespace std;
 
-static const int NO_OPERATIONS = 12;
-static const string FILENAME = "example";
-static const string OPERATIONS[] = {"DONE", "OUTPUT", "INIT", "LOOP", "IF", "INPUT", "PLUS", "MINUS", "STORE", "INITA", "FUNC", "GO"};
+typedef std::function<void(void)> foo;
 
-void parse(ifstream& fin);
-bool empty(string line);
-bool comment(string& line);
-bool operation(string line);
-void parsee(ifstream& fin);
+void parse(std::ifstream& fin);
 // parsee helper functions
-void parseINIT(char& next, ifstream& fin);
-void parseOUTPUT(char& next, ifstream& fin);
-void parsePLUS(char& next, ifstream& fin);
-void parseMINUS(char& next, ifstream& fin);
-void parseSTORE(char& next, ifstream& fin);
-void parsePUT(char& next, ifstream& fin);
-void parseINITA(char& next, ifstream& fin);
-void parseAT(char& next, ifstream& fin);
-void parseGO(char& next, ifstream& fin);
-void parseFUNC(char& next, ifstream& fin);
+foo parseINIT(std::ifstream& fin);
+foo parseOUTPUT(std::ifstream& fin);
+foo parsePLUS(std::ifstream& fin);
+foo parseMINUS(std::ifstream& fin);
+foo parseSTORE(std::ifstream& fin);
+foo parsePUT(std::ifstream& fin);
+foo parseINITA(std::ifstream& fin);
+foo parseAT(std::ifstream& fin);
+//foo parseGO(std::ifstream& fin);
+//foo parseFUNC(std::ifstream& fin);
 
 int main()
 {
-	ifstream fin;
-    fin.open("/Users/naelinaquino/Documents/assembly/LISA/LISA/test.txt");
+	std::ifstream fin;
+    // fin.open("/Users/naelinaquino/Documents/assembly/LISA/LISA/test.txt");
 
-	try
-	{
-		//parse(fin);
-        cout << "try\n";
-        parsee(fin);
-        cout << "done\n";
-	} catch(string& msg)
-	{
-		cerr << msg << endl;
-	}
+    parse(fin);
 	// TODO
 	// compile
 	// disregard empty lines
@@ -51,108 +38,13 @@ int main()
     fin.close();
 	return EXIT_SUCCESS;
 }
-/*
-void parse(ifstream& fin)
-{
-	size_t line_no;
-	string line;
-	string word;
 
-	fin.open(FILENAME.c_str());
-	line_no = 1;
-	while( getline(fin, line) )
-        {
-		comment(line);
-
-		if( empty(line) )
-		{
-			line_no++;
-			continue;
-		}
-
-                size_t begin;
-		bool first;
-
-		first = true;
-                while( begin = line.find_first_not_of(" \t\n\r") != string::npos )      // find non-whitespace
-                {
-                        size_t end;
-                        end = line.find_first_of(" \t\n\r", begin);                     // find whitespace
-
-			if( line.empty() )
-				break;
-
-                        if( end == string::npos )                                       // end of line
-			{
-                                word = line;
-				line = "";
-			}
-
-                        else                                                            // parse word
-                        {
-                                word = line.substr(begin - 1, end);
-                                line = line.substr(end + 1, line.length());
-                        }
-
-			string temp;
-			for( size_t index = 0; index < word.length(); index++ )
-				temp += toupper(word[index]);
-			word = temp;
-
-			if( first )
-			{
-				if( !operation(word) )
-					throw "Unrecognized operation: " + word + "\nat line number: " + std::to_string(line_no) + "\n\"" + line + "\"";
-				first = false;
-			}
-                }
-//                cout << line << endl << word << endl;
-
-		line_no++;
-        }
-
-	fin.close();
-}
-*/
-bool empty(string line)
-{
-	if( size_t ch = line.find_first_not_of(" \t\n\r") == string::npos )
-		return true;
-
-	return false;
-}
-
-bool comment(string& line)
-{
-	size_t position;
-	position = line.find('/');
-
-	if( position != string::npos )
-	{
-		line = line.substr(0, position);
-		return true;
-	}
-
-	return false;
-}
-
-bool operation(string word)
-{
-	for( size_t index = 0; index < NO_OPERATIONS; index++ )
-	{
-		if( word == OPERATIONS[index] )
-			return true;
-	}
-
-	return false;
-}
-
-void parsee(ifstream& fin)
+void parse(std::ifstream& fin)
 {
     char next;
-    string op;
-    string var;
-    string val;
+    std::string op;
+    std::string var;
+    std::string val;
     
     while(fin.get(next) && !fin.eof())
     {
@@ -165,7 +57,7 @@ void parsee(ifstream& fin)
         while(next != ' ' && next != '\n' && next != '\r' && !fin.eof())
         {
             next = toupper(next); // Uppercase
-            op += next; // Add char to string
+            op += next; // Add char to std::string
             fin.get(next);
         }
         
@@ -173,37 +65,38 @@ void parsee(ifstream& fin)
             fin.get(next);
         
         if(op == "INIT")
-            parseINIT(next, fin);
+            parseINIT(fin)();
         else if(op == "INPUT")
             lisa::input();
         else if(op == "OUTPUT")
-            parseOUTPUT(next, fin);
+            parseOUTPUT(fin)();
         else if(op == "PLUS")
-            parsePLUS(next, fin);
+            parsePLUS(fin)();
         else if(op == "MINUS")
-            parseMINUS(next, fin);
+            parseMINUS(fin)();
         else if(op == "ERASE")
             lisa::erase();
         else if(op == "DONE")
             lisa::done();
         else if(op == "STORE")
-            parseSTORE(next, fin);
+            parseSTORE(fin)();
         else if(op == "PUT")
-            parsePUT(next, fin);
+            parsePUT(fin)();
         else if(op == "INITA")
-            parseINITA(next, fin);
-        else if(op == "FUNC")
-            parseFUNC(next, fin);
-        else if(op == "GO")
-            parseGO(next, fin);
+            parseINITA(fin)();
+//        else if(op == "FUNC")
+//            parseFUNC(fin)();
+//        else if(op == "GO")
+//            parseGO(fin);
     }
     
 }
 
-void parseINIT(char& next, ifstream& fin)
+foo parseINIT(std::ifstream& fin)
 {
-    string var;
-    string val;
+    char next;
+    std::string var;
+    std::string val;
     
     while(next == ' ')
         fin.get(next);
@@ -224,12 +117,13 @@ void parseINIT(char& next, ifstream& fin)
     }
 
     int i = stoi(val);
-    lisa::init(var, i);
+    return std::bind(&lisa::init, var, i);
 }
 
-void parseOUTPUT(char& next, ifstream& fin)
+foo parseOUTPUT(std::ifstream& fin)
 {
-    string var;
+    char next;
+    std::string var;
 
     while(next == ' ')
         fin.get(next);
@@ -240,13 +134,14 @@ void parseOUTPUT(char& next, ifstream& fin)
         fin.get(next);
     }
     
-    lisa::output(var);
+    return std::bind(&lisa::output, var);
 }
 
-void parsePLUS(char& next, ifstream& fin)
+foo parsePLUS(std::ifstream& fin)
 {
-    string var1;
-    string var2;
+    char next;
+    std::string var1;
+    std::string var2;
     
     while(next == ' ')
         fin.get(next);
@@ -266,13 +161,14 @@ void parsePLUS(char& next, ifstream& fin)
         fin.get(next);
     }
     
-    lisa::plus(var1, var2);
+    return std::bind(&lisa::plus, var1, var2);
 }
 
-void parseMINUS(char& next, ifstream& fin)
+foo parseMINUS(std::ifstream& fin)
 {
-    string var1;
-    string var2;
+    char next;
+    std::string var1;
+    std::string var2;
     
     while(next == ' ')
         fin.get(next);
@@ -292,12 +188,13 @@ void parseMINUS(char& next, ifstream& fin)
         fin.get(next);
     }
     
-    lisa::minus(var1, var2);
+    return std::bind(&lisa::minus, var1, var2);
 }
 
-void parseSTORE(char& next, ifstream& fin)
+foo parseSTORE(std::ifstream& fin)
 {
-    string var;
+    char next;
+    std::string var;
     
     while(next == ' ')
         fin.get(next);
@@ -308,13 +205,14 @@ void parseSTORE(char& next, ifstream& fin)
         fin.get(next);
     }
     
-    lisa::store(var);
+    return std::bind(&lisa::store, var);
 }
 
-void parsePUT(char& next, ifstream& fin)
+foo parsePUT(std::ifstream& fin)
 {
-    string var1;
-    string var2;
+    char next;
+    std::string var1;
+    std::string var2;
     
     while(next == ' ')
         fin.get(next);
@@ -334,14 +232,15 @@ void parsePUT(char& next, ifstream& fin)
         fin.get(next);
     }
     
-    lisa::put(var1, var2);
+    return std::bind(&lisa::put, var1, var2);
 }
 
-void parseINITA(char& next, ifstream& fin)
+foo parseINITA(std::ifstream& fin)
 {
-    string var;
-    string n;
-    string val;
+    char next;
+    std::string var;
+    std::string n;
+    std::string val;
     
     while(next == ' ')
         fin.get(next);
@@ -364,8 +263,8 @@ void parseINITA(char& next, ifstream& fin)
     while(next == ' ')
         fin.get(next);
     
-    const int SIZE = stoi(n);
-    int arr[SIZE];
+    int SIZE = stoi(n);
+    int* arr = new int[SIZE];
     
     for(int i = 0; i < SIZE; i++)
     {
@@ -382,13 +281,14 @@ void parseINITA(char& next, ifstream& fin)
             fin.get(next);
     }
     
-    lisa::inita(var, SIZE, arr);
+    return std::bind(&lisa::inita, var, SIZE, arr);
 }
 
-void parseAT(char& next, ifstream& fin)
+foo parseAT(std::ifstream& fin)
 {
-    string var;
-    string val;
+    char next;
+    std::string var;
+    std::string val;
     
     while(next == ' ')
         fin.get(next);
@@ -409,12 +309,14 @@ void parseAT(char& next, ifstream& fin)
     }
     
     int i = stoi(val);
-    lisa::at(var, i);
+    return std::bind(lisa::at, var, i);
 }
 
-void parseGO(char& next, ifstream& fin)
+// do things
+/*
+foo parseGO(std::ifstream& fin)
 {
-    string var;
+    std::string var;
     
     while(next == ' ')
         fin.get(next);
@@ -425,9 +327,9 @@ void parseGO(char& next, ifstream& fin)
         fin.get(next);
     }
     
-    string code = lisa::go(var);
+    std::string code = lisa::go(var);
     ofstream func_file("temp.txt");
-    ifstream file;
+    std::ifstream file;
     for(auto it = code.begin(); it < code.end(); it++)
     {
         func_file << *it;
@@ -438,11 +340,11 @@ void parseGO(char& next, ifstream& fin)
     parsee(file);
 }
 
-void parseFUNC(char& next, ifstream& fin)
+foo parseFUNC(std::ifstream& fin)
 {
-    string name;
-    string code;
-    string op;
+    std::string name;
+    std::string code;
+    std::string op;
 
     while(next == ' ')
         fin.get(next);
@@ -474,3 +376,4 @@ void parseFUNC(char& next, ifstream& fin)
     
     lisa::func(name, code);
 }
+*/
