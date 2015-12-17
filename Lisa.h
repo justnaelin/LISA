@@ -18,140 +18,162 @@
 
 namespace lisa
 {
+
+    typedef std::function<void(void)> f;
     typedef std::unordered_multimap<std::string, int> umm;
     typedef std::unordered_map<std::string, std::function<void(void)>> umm2;
+    typedef std::unordered_map<std::string, std::string> umm3;
 
+    static int reg = 0;
     umm variables;
     umm2 functions;
-
+    umm3 fx;
+    
     void erase()
     {
-        variables.erase("REG");
+        reg = 0;
     }
-
-    void start()
-    {
-        variables.insert(umm::value_type("REG", 0));
-    }
-
     void done()
     {
         erase();
         exit(0);
     }
-
     void input()
     {
-        int val;
-        std::cin >> val;
-
-        erase();
-        variables.insert(umm::value_type("REG", val));
+        std::cin >> reg;
     }
-
     void output(std::string key)
     {
-        auto range = variables.equal_range(key);
-
-        for(auto it = range.first; it != range.second; it++)
-            std::cout << it->second << " ";
+        if(key == "reg")
+        std::cout << reg << std::endl;
+        else 
+        {
+            auto range = variables.equal_range(key);
+            
+            for(auto it = range.first; it != range.second; it++)
+                std::cout << it->second << " ";
         std::cout << std::endl;
+        }
     }
-
     void plus(std::string x, std::string y)
     {
-        if(variables.find(x) != variables.end() && variables.find(y) != variables.end())
+        if(x == "reg")
+            reg += variables.find(y)->second;
+        else if(y == "reg")
+            reg += variables.find(x)->second;
+        else if(x == "reg" && y == "reg")
+            reg += reg;
+        else
         {
-            erase();
-            variables.insert(umm::value_type("REG", variables.find(x)->second + variables.find(y)->second));
+            if(variables.find(x) != variables.end() && variables.find(y) != variables.end())
+                reg = variables.find(x)->second + variables.find(y)->second;
         }
     }
-
     void minus(std::string x, std::string y)
     {
-        if(variables.find(x) != variables.end() && variables.find(y) != variables.end())
+        if(x == "reg")
+            reg -= variables.find(y)->second;
+        else if(y == "reg")
+            reg -= variables.find(x)->second;
+        else if(x == "reg" && y == "reg")
+            reg -= reg;
+        else
         {
-            erase();
-            variables.insert(umm::value_type("REG", variables.find(x)->second - variables.find(y)->second));
+            if(variables.find(x) != variables.end() && variables.find(y) != variables.end())
+                reg = variables.find(x)->second - variables.find(y)->second;
         }
     }
-
     void store(std::string key)
     {
+        if(key == "reg")
+            return;
+        
         variables.erase(key);
-        variables.insert(umm::value_type(key, variables.find("REG")->second));
+        variables.insert(umm::value_type(key, reg));
     }
-
     void init(std::string key, int value)
     {
-	    variables.erase(key);
-    	variables.insert(umm::value_type(key, value));
+        if(key == "reg")
+            exit(1);
+        
+        variables.erase(key);
+        variables.insert(umm::value_type(key, value));
     }
-
+    
     void inita(std::string key, int size, int arr[])
     {
+        if(key == "reg")
+            exit(1);
+        
         variables.erase(key);
-        for(int i = size - 1; i > -1; i--)
+        for(int i = 0; i < size; i++)
             variables.insert(umm::value_type(key, arr[i]));
     }
-
+    
     void put(std::string key, std::string y)
     {
-        variables.erase(key);
-        variables.insert(umm::value_type(key, variables.find(y)->second));
+        if(key == "reg")
+        {
+            reg = variables.find(y)->second;
+        }
+        else if(y == "reg")
+        {
+            variables.erase(key);
+            variables.insert(umm::value_type(key, reg));
+        }
+        else
+        {
+            variables.erase(key);
+            variables.insert(umm::value_type(key, variables.find(y)->second));
+        }
     }
-
+    
     void at(std::string key, int index)
     {
         auto range = variables.equal_range(key);
-        auto it = range.first;
+        int i = 0;
         
-        for(int i = 0; i < index; i++)
-            it++;
-        
-        erase();
-        variables.insert(umm::value_type("REG", it->second));
+        for(auto it = range.first; it != range.second; it++)
+        {
+            if(i == index)
+                reg = it->second;
+            i++;
+        }
     }
-
-    bool if_statement(std::string statement) 
+    
+    bool if_statement(std::string statement)
     {
-    	if(statement == "NEG")
-            return variables.find("REG")->second < 0;
-    	else if(statement == "POS")
-    	    return variables.find("REG")->second > 0;
-    	else if(statement == "ZERO")
-    	    return variables.find("REG")->second == 0;
-    	else
-    	    exit(0);
+        if(statement == "NEG")
+            return reg < 0;
+        else if(statement == "POS")
+            return reg > 0;
+        else if(statement == "ZERO")
+            return reg == 0;
+        else
+            exit(0);
     }
-
-    void loop(std::string name) 
+    
+    void loop(std::string name)
     {
         auto range = functions.equal_range(name);
-    	while(true)
+        while(true)
         {
             for(auto it = range.first; it != range.second; it++)
                 it->second();
         }
     }
-
-    void func(std::string name, std::vector<std::function<void(void)>> funcs)
+    
+    void func(std::string name, std::string code)
     {
-        functions.erase(name);
-        for(int i = 0; i < funcs.size(); i++)
-            functions.insert(umm2::value_type(name, funcs[i]));
+        fx.erase(name);
+        fx.insert(umm3::value_type(name, code));
     }
-
-    void go(std::string name)
+    
+    std::string go(std::string name)
     {
-        auto range = functions.equal_range(name);
-        for(auto it = range.first; it != range.second; it++)
-            it->second();
+        auto it = fx.find(name);
+        return it->second;
     }
 }
 
-// TODO: parse
-// TODO: exception handling
-
 #endif /* Lisa_h */
-
