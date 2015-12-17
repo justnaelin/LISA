@@ -26,7 +26,7 @@ foo parseLOOP(std::ifstream& fin);
 int main()
 {
 	std::ifstream fin;
-    fin.open("easy");
+    fin.open("easy.txt");
 //    std::cout << lisa::reg << std::endl;
     parse(fin);
 	// TODO
