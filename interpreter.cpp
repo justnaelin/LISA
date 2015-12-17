@@ -27,7 +27,6 @@ int main()
 {
 	std::ifstream fin;
     fin.open("easy");
-    lisa::init("reg", 19);
 //    std::cout << lisa::reg << std::endl;
     parse(fin);
 	// TODO
@@ -65,8 +64,9 @@ void parse(std::ifstream& fin)
         
         while(next == ' ')
             fin.get(next);
-        
-        if(op == "INIT")
+        if(op == "START")
+            lisa::start();
+        else if(op == "INIT")
             parseINIT(fin)();
         else if(op == "INPUT")
             lisa::input();

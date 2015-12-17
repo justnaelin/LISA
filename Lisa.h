@@ -18,16 +18,20 @@
 
 namespace lisa
 {
-    typedef std::function<void(void)> f;
     typedef std::unordered_multimap<std::string, int> umm;
     typedef std::unordered_map<std::string, std::function<void(void)>> umm2;
-    static int reg = 0;
+
     umm variables;
     umm2 functions;
-    
+
     void erase()
     {
-        reg = 0;
+        variables.erase("REG");
+    }
+
+    void start()
+    {
+        variables.insert(umm::value_type("REG", 0));
     }
 
     void done()
@@ -38,39 +42,44 @@ namespace lisa
 
     void input()
     {
-        std::cin >> reg;
+        int val;
+        std::cin >> val;
+
+        erase();
+        variables.insert(umm::value_type("REG", val));
     }
 
     void output(std::string key)
     {
-        if(key == "reg")
-	    std::cout << reg << std::endl;
-        else 
-        {
-            auto range = variables.equal_range(key);
+        auto range = variables.equal_range(key);
 
-            for(auto it = range.first; it != range.second; it++)
-                std::cout << it->second << " ";
-	    std::cout << std::endl;
-        }
+        for(auto it = range.first; it != range.second; it++)
+            std::cout << it->second << " ";
+        std::cout << std::endl;
     }
 
     void plus(std::string x, std::string y)
     {
         if(variables.find(x) != variables.end() && variables.find(y) != variables.end())
-            reg = variables.find(x)->second + variables.find(y)->second;
+        {
+            erase();
+            variables.insert(umm::value_type("REG", variables.find(x)->second + variables.find(y)->second));
+        }
     }
 
     void minus(std::string x, std::string y)
     {
         if(variables.find(x) != variables.end() && variables.find(y) != variables.end())
-            reg = variables.find(x)->second - variables.find(y)->second;
+        {
+            erase();
+            variables.insert(umm::value_type("REG", variables.find(x)->second - variables.find(y)->second));
+        }
     }
 
     void store(std::string key)
     {
         variables.erase(key);
-        variables.insert(umm::value_type(key, reg));
+        variables.insert(umm::value_type(key, variables.find("REG")->second));
     }
 
     void init(std::string key, int value)
@@ -82,7 +91,7 @@ namespace lisa
     void inita(std::string key, int size, int arr[])
     {
         variables.erase(key);
-        for(int i = 0; i < size; i++)
+        for(int i = size - 1; i > -1; i--)
             variables.insert(umm::value_type(key, arr[i]));
     }
 
@@ -100,17 +109,18 @@ namespace lisa
         for(int i = 0; i < index; i++)
             it++;
         
-        reg = it->second;
+        erase();
+        variables.insert(umm::value_type("REG", it->second));
     }
 
     bool if_statement(std::string statement) 
     {
     	if(statement == "NEG")
-            return reg < 0;
+            return variables.find("REG")->second < 0;
     	else if(statement == "POS")
-    	    return reg > 0;
+    	    return variables.find("REG")->second > 0;
     	else if(statement == "ZERO")
-    	    return reg == 0;
+    	    return variables.find("REG")->second == 0;
     	else
     	    exit(0);
     }
@@ -138,10 +148,10 @@ namespace lisa
         for(auto it = range.first; it != range.second; it++)
             it->second();
     }
-
 }
 
 // TODO: parse
 // TODO: exception handling
 
 #endif /* Lisa_h */
+

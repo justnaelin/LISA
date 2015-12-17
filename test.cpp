@@ -16,7 +16,7 @@ int main()
     // READ FILE
     
     // TEST INPUT/OUTPUT 
-    lisa::output("REG");
+    lisa::output("reg");
     lisa::input();
     lisa::output("reg");
     
