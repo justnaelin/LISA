@@ -1,0 +1,7 @@
+init var1 5
+init var2 4
+
+output var1
+output var2
+
+done
