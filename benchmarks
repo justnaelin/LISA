@@ -1,0 +1,53 @@
+
+ERASE
+
+INIT cntr 0	
+INPUT		
+STORE cntr	
+
+INIT sum 0 	
+INIT one 1
+
+
+FUNC add 	
+PUT REG cntr	
+IF NEG		
+BREAK
+FI		
+INPUT
+PLUS sum REG
+STORE sum
+MINUS cntr one
+CNUF
+
+LOOP add 	
+		
+
+OUTPUT sum
+
+
+INITA arr 5 1 2 3 4 5 
+
+
+ERASE
+
+
+INIT target 0	
+INIT index 0 	
+INIT incr 1 	
+INPUT		
+STORE target	
+LOOP		
+AT arr index 	
+MINUS target REG 
+IF ZERO		
+PUT REG index	
+OUTPUT REG	
+BREAK		
+FI		
+PLUS index incr	 
+STORE index	
+POOL		
+
+
+

@@ -26,8 +26,9 @@ foo parseLOOP(std::ifstream& fin);
 int main()
 {
 	std::ifstream fin;
-    // fin.open("/Users/naelinaquino/Documents/assembly/LISA/LISA/test.txt");
-
+    fin.open("easy");
+    lisa::init("reg", 19);
+//    std::cout << lisa::reg << std::endl;
     parse(fin);
 	// TODO
 	// compile
